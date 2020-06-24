@@ -1,0 +1,20 @@
+# Code
+import yfinance as yf
+# download data from yahoo finance
+tickers = 'USO UCO DBO USL SCO OILK DTO OLEM'
+data = yf.download(tickers=tickers, period='max')
+ # reduce dataframe to rows, where all asset prices are present
+data_reduced = data.dropna()['Adj Close']
+returns_reduced = data_reduced.pct_change()
+# calculate correlations with USO
+corr = returns_reduced.corr()['USO']
+print(corr)
+# return over whole period
+returns = data_reduced[['UCO', 'SCO']].iloc[-1]/data_reduced[['UCO', 'SCO']].iloc[0] -1
+# annualized portfolio return
+dayCount = 252/len(data_reduced.UCO)
+portfolio = 0.5*( (1+returns[0])**dayCount + (1+returns[1])**dayCount -2)
+print(portfolio)
+ # correlation between UCO and SCO
+print(returns_reduced.corr()['UCO']['SCO'])
+
